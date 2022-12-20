@@ -2,6 +2,7 @@ package com.educandoweb.course.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.aspectj.weaver.ast.Or;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -81,6 +82,9 @@ public class Product implements Serializable {
         return categories;
     }
 
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,6 +93,14 @@ public class Product implements Serializable {
         return id.equals(product.id);
     }
 
+    @JsonIgnore
+    public Set<Order> getOrders(){
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : items) {
+                set.add(x.getOrder());
+        }
+        return set;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(id);
